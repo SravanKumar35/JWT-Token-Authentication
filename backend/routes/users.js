@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken')
 router.post('/register', function(req, res, next){
   var user = new User({
     email: req.body.email,
-    username: req.body.username,
+    name: req.body.name,
     password: User.hashPassword(req.body.password),
     creation_dt: Date.now()
   })
@@ -28,7 +28,7 @@ router.post('/login', function(req, res, next){
   promise.then(function(doc){
     if(doc) {
       if(doc.isValid(req.body.password)){
-        let token = jwt.sign({username: doc.username}, 'docwithyou2019', {expiresIn : '3h'})
+        let token = jwt.sign({name: doc.name}, 'secret', {expiresIn : '3h'})
         return res.status(200).json(token)
       }
       else {
@@ -47,7 +47,7 @@ router.post('/login', function(req, res, next){
 })
 
 router.get('/username', verifyToken, function(req, res, next){
-  return res.status(200).json(decodedToken.username)
+  return res.status(200).json(decodedToken.name)
 })
 
 var decodedToken=''
