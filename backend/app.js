@@ -10,19 +10,32 @@ var usersRouter = require("./routes/users");
 var app = express();
 
 var mongoose = require("mongoose");
-mongoose.connect(
-  "mongodb://localhost/ricker",
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  (err) => {
-    if (!err) {
-      console.log("MongoDB Connection Successful");
-    } else {
-      console.log(
-        "Error in DB Connection : " + JSON.stringify(err, undefined, 2)
-      );
-    }
-  }
-);
+// mongoose.connect(
+//   "mongodb://localhost/ricker",
+//   { useNewUrlParser: true, useUnifiedTopology: true },
+//   (err) => {
+//     if (!err) {
+//       console.log("MongoDB Connection Successful");
+//     } else {
+//       console.log(
+//         "Error in DB Connection : " + JSON.stringify(err, undefined, 2)
+//       );
+//     }
+//   }
+// );
+
+const uri = process.env.ATLAS_URI;
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+});
+
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("MongoDB database connection established");
+});
 
 var cors = require("cors");
 app.use(
